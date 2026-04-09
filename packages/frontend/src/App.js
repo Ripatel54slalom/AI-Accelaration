@@ -7,6 +7,23 @@ function App() {
   const [error, setError] = useState(null);
   const [newItem, setNewItem] = useState('');
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/items/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete item');
+      }
+
+      setData(data.filter((item) => item.id !== id));
+    } catch (err) {
+      setError('Error deleting item: ' + err.message);
+      console.error('Error deleting item:', err);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -58,7 +75,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>React Frontend with Node Backend</h1>
+        <h1>Hello World</h1>
         <p>Connected to in-memory database</p>
       </header>
       
@@ -84,7 +101,10 @@ function App() {
             <ul>
               {data.length > 0 ? (
                 data.map((item) => (
-                  <li key={item.id}>{item.name}</li>
+                  <li key={item.id}>
+                    {item.name}
+                    <button onClick={() => handleDelete(item.id)}>Delete</button>
+                  </li>
                 ))
               ) : (
                 <p>No items found. Add some!</p>
